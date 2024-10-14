@@ -1,12 +1,35 @@
 <script setup lang="ts">
-import type { PickerColumn } from 'vant'
-import useAppStore from '@/stores/modules/app'
-import { languageColumns, locale } from '@/utils/i18n'
+import  { showConfirmDialog } from 'vant'
 import { gsap } from "gsap";
+import { useResizeObserver } from '@/hooks/useResizeObserver';
+import { useI18n } from 'vue-i18n'
 
-const appStore = useAppStore()
+const { t } = useI18n()
+
+definePage({
+  name: "downLoadPage",
+  meta: {
+    level: 1,
+    title: "Lotaria VN100",
+    i18n: "home.downLoadPage",
+  },
+});
+
 const checked = ref<boolean>(isDark.value)
 
+
+// 动态计算视口宽度
+const viewportVal = ref('')
+watch(useResizeObserver(), (val) => {
+  if (val < 768) {
+    viewportVal.value = 'isMobile'
+  } else if (val >= 768 && val < 1024) {
+    viewportVal.value = 'isTablet'
+  } else {
+    viewportVal.value = 'isDesktop'
+  }
+  console.log(viewportVal.value)
+}, { immediate: true })
 watch(
   () => isDark.value,
   (newMode) => {
@@ -15,23 +38,7 @@ watch(
   { immediate: true },
 )
 
-function toggle() {
-  toggleDark()
-  appStore.switchMode(isDark.value ? 'dark' : 'light')
-}
-
-const { t } = useI18n()
-
-const showLanguagePicker = ref(false)
-const languageValues = ref<Array<string>>([locale.value])
-const language = computed(() => languageColumns.find(l => l.value === locale.value).text)
-
-function onLanguageConfirm(event: { selectedOptions: PickerColumn }) {
-  locale.value = event.selectedOptions[0].value as string
-  showLanguagePicker.value = false
-}
-
-function getImageUrl(url) {
+function getImageUrl(url:any) {
   return new URL(`../assets/images/${url}`, import.meta.url).href;
 }
 
@@ -41,17 +48,19 @@ const phone = ref(null);
 const download = ref(null)
 const iconSrc = ref(getImageUrl('az.png'));
 const iconSrc2 = ref(getImageUrl('ios.png'));
-let animation;
+let animation: any;
 function handleMouseOver() {
-  gsap.to(img1.value, {
-    backgroundColor: '#FFD1D1', duration:0.1, onComplete: () => {
+  if(viewportVal.value === 'isMobile') return
+  animation = gsap.to(img1.value, {
+    backgroundColor: 'yellow', duration: 0.1, onComplete: () => {
       iconSrc.value = getImageUrl('download.png'); // 悬浮时切换图标
     }
   });
 }
 
 function handleMouseLeave() {
-  gsap.to(img1.value, {
+  if(viewportVal.value === 'isMobile') return
+  animation = gsap.to(img1.value, {
     backgroundColor: '#fff', duration: 0.1, onComplete: () => {
       iconSrc.value = getImageUrl('az.png'); // 离开时恢复图标
     }
@@ -59,29 +68,77 @@ function handleMouseLeave() {
 }
 
 function handleMouseOver2() {
-  gsap.to(img2.value, {
-    backgroundColor: '#FFD1D1', duration:0.1, onComplete: () => {
+  if(viewportVal.value === 'isMobile') return
+  animation = gsap.to(img2.value, {
+    backgroundColor: 'yellow', duration: 0.1, onComplete: () => {
       iconSrc2.value = getImageUrl('download.png'); // 悬浮时切换图标
     }
   });
 }
 
 function handleMouseLeave2() {
-  gsap.to(img2.value, {
+  if(viewportVal.value === 'isMobile') return
+  animation = gsap.to(img2.value, {
     backgroundColor: '#fff', duration: 0.1, onComplete: () => {
       iconSrc2.value = getImageUrl('ios.png'); // 离开时恢复图标
     }
   });
 }
 
+const downloadAndroidPackage = () => {
+  // 提供Android下载链接的逻辑
+  window.location.href = "https://storage.googleapis.com/777jogo/777jogo.apk";
+};
+
+
+// 测试下载
+const handleIOSDownload = ()=> {
+  // 模拟下载逻辑
+  fetch('https://777jogo-1313218760.cos.sa-saopaulo.myqcloud.com/777jogo/777JOGO.mobileconfig')
+    .then(response => response.blob())
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = '777JOGO.mobileconfig'; // 默认文件名
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url); // 释放内存
+      downloadCompleted(); // 调用下载完成的处理函数
+    })
+    .catch(error => console.error('Download failed:', error));
+}
+
+function downloadCompleted() {
+  console.log('Download completed');
+  // 在这里执行下载完成后的操作
+  setTimeout(() => {
+    showConfirmDialog({
+      title: t('tip'),
+      message:
+        t('downloadTip'),
+      confirmButtonText: t('install'),
+      cancelButtonText: t('cancel')
+    })
+      .then(() => {
+        window.location.href =
+          "https://storage.googleapis.com/777jogo/777JOGO.mobileprovision";
+      })
+      .catch(() => {
+        // on cancel
+      });
+  }, 5000)
+
+}
+
+
 onMounted(() => {
   animation = gsap.fromTo(phone.value, {
     opacity: 0,
-    rotationY: 90, // 控制翻转的角度
-  }, { duration: 1, opacity: 1, rotationY: 180, ease: 'power2.inOut' });
+    rotationY: 270, // 控制翻转的角度
+  }, { duration: 1, opacity: 1, rotationY: 360, ease: 'power2.inOut' });
   gsap.fromTo(download.value, { opacity: 0, y: 100 }, { opacity: 1, y: -50, duration: 1 });
-  // img1.value.addEventListener('mouseenter', switchImgGsapIn(), { passive: true });
-  // img1.value.addEventListener('mouseleave', switchImgGsapOut(), { passive: true });
 });
 
 onUnmounted(() => {
@@ -93,91 +150,117 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class='container relative mx-auto'>
-    <van-image class="absolute top-0 left-0" width="100%" height="auto" :src="getImageUrl('bg.png')" />
-    <div class="phone_container" ref="phone">
-      <van-image class="phone_img" width="500" height="auto" :src="getImageUrl('phone.png')" />
-      <van-swipe class="my-swipe" :autoplay="3000" :show-indicators="false" indicator-color="white">
-        <van-swipe-item>
-          <img class="w-full h-full" src="@/assets/images/slide-01.jpg" alt="">
+  <div class='relative mx-auto w-full h-vh' :class="viewportVal">
+    <van-image class="absolute top-0 left-0 w-full" width="100%" height="auto" :src="getImageUrl('bg.png')" />
+    <div class="phone_container w-100  h-150 left-60 top-20  absolute overflow-hidden " ref="phone">
+      <van-image class="phone_img mx-auto absolute top-0 left-0 z-3  w-100 h-auto" :src="getImageUrl('phone.png')" />
+      <van-swipe
+        class="my-swipe w-62 h-135  absolute! z-2 bg-[#0c192c] left-19  top-4 rounded-5 overflow-hidden"
+        :autoplay="3000" :show-indicators="false" indicator-color="white">
+        <van-swipe-item class="w-full h-full">
+          <img class="w-62 h-135" src="@/assets/images/slide-01.jpg" alt="">
         </van-swipe-item>
-        <van-swipe-item>
-          <img class="w-full h-full" src="@/assets/images/slide-02.jpg" alt="">
+        <van-swipe-item class="w-full h-full">
+          <img class="w-62 h-135" src="@/assets/images/slide-02.jpg" alt="">
         </van-swipe-item>
-        <van-swipe-item>
-          <img class="w-full h-full" src="@/assets/images/slide-03.jpg" alt="">
+        <van-swipe-item class="w-full h-full">
+          <img class="w-62 h-135" src="@/assets/images/slide-03.jpg" alt="">
         </van-swipe-item>
       </van-swipe>
     </div>
-    <ul class="flex flex-col mt-10 lg:gap-30 absolute lg:bottom-320 lg:right-450 z-999 cursor-pointer" ref="download">
-      <li class="w-250 h-60 bg-white rounded-full flex items-center justify-center text-center text-black " @mouseover.stop="handleMouseOver()"  @mouseleave.stop="handleMouseLeave()" ref="img1">
-        <img class="w-30 h-auto mr-20" :src="iconSrc" >
-        <span>Android下载</span>
+    <ul class="downLoad flex flex-col mt-10 gap-10 absolute bottom-20 right-100 z-999 cursor-pointer" ref="download">
+      <li
+        class="w-70 h-20 bg-white rounded-full shadow-2xl shadow-red-800/40 flex items-center justify-center text-center text-black "
+        @mouseover.stop="handleMouseOver()" @mouseleave.stop="handleMouseLeave()" ref="img1" @click="downloadAndroidPackage()"> 
+        <img class="w-8 h-auto mr-4" :src="iconSrc">
+        <span class="text-6">{{ t("androidDownLoad") }}</span>
       </li>
-      <li class="w-250 h-60 bg-white rounded-full flex items-center justify-center text-center text-black "@mouseover.stop="handleMouseOver2()"  @mouseleave.stop="handleMouseLeave2()" ref="img2">
-        <img class="w-30 h-auto mr-20" :src="iconSrc2" alt="">
-        <span>iPhone下载</span>
+      <li
+        class="w-70 h-20 bg-white rounded-full shadow-2xl shadow-red-800/40 flex items-center justify-center text-center text-black "
+        @mouseover.stop="handleMouseOver2()" @mouseleave.stop="handleMouseLeave2()" ref="img2" @click="handleIOSDownload()">
+        <img class="w-8 h-auto mr-4" :src="iconSrc2" alt="">
+        <span class="text-6">{{ t("iodDownLoad") }}</span>
       </li>
     </ul>
-    <!-- <VanCellGroup :title="t('menus.basicSettings')" :border="false" :inset="true">
-    <VanCell center :title="t('menus.darkMode')">
-      <template #right-icon>
-        <VanSwitch v-model="checked" size="20px" aria-label="on/off Dark Mode" @click="toggle()" />
-      </template>
-</VanCell>
-<VanCell is-link :title="t('menus.language')" :value="language" @click="showLanguagePicker = true" />
-</VanCellGroup>
-
-<van-popup v-model:show="showLanguagePicker" position="bottom">
-  <van-picker v-model="languageValues" :columns="languageColumns" @confirm="onLanguageConfirm"
-    @cancel="showLanguagePicker = false" />
-</van-popup> -->
   </div>
 </template>
-<style scoped>
+<style lang="less"scoped>
 .container {
   width: 100vw;
   height: 100vh;
-  /* background-color: yellow; */
 }
 
-.phone_container {
-  width: 25rem;
-  height: 48rem;
-  margin: 0 auto;
-  bottom: 2rem;
-  left: 15rem;
-  /* background-color: red; */
-  position: absolute;
-  overflow: hidden;
-}
+@media screen and (max-width: 768px) {
+  .phone_container {
+    width: 350px;
+    height: 550px;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
-.my-swipe {
-  width: 20rem;
-  height: 42.2rem;
-  position: absolute;
-  top: 1.5rem;
-  left: 2.45rem;
-  /* margin:1rem auto 0; */
-  border-radius: 5%;
-}
 
-.my-swipe .van-swipe-item {
-  width: 100%;
-  color: #fff;
-  font-size: 20px;
-  line-height: 150px;
-  text-align: center;
-  background-color: #0c192c;
-}
+  .phone_img {
+    width: 350px;
+    height: auto;
+    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
-.phone_img {
-  margin: 0 auto;
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 99;
+  .my-swipe {
+    width: 220px;
+    height: 475px;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+
+  .my-swipe .van-swipe-item {
+    width: 100%;
+    height: 475px;
+    background-color: #0c192c;
+
+    img {
+      width: 220px;
+      height: 475px;
+    }
+  }
+
+  .downLoad {
+    width: 100%;
+    height: 100px;
+    /* background: yellow; */
+    bottom: 0px;
+    left: 50%;
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+    transform: translateX(-50%);
+  }
+
+  .downLoad li {
+    padding: 2px 10px;
+    width: 150px;
+    height: 45px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+    justify-items: center;
+  }
+
+  .downLoad li span {
+    font-size: 14px;
+  }
+
+  .downLoad li img {
+    width: 20px;
+    height: auto;
+  }
 }
 </style>
 

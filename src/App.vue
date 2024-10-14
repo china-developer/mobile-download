@@ -40,15 +40,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <VanConfigProvider :theme="mode">
+  <!-- <VanConfigProvider :theme="mode"> -->
     <router-view v-slot="{ Component, route }">
       <section class="app-wrapper">
-        <keep-alive :include="keepAliveRouteNames">
+        <!-- <keep-alive :include="keepAliveRouteNames"> -->
           <component :is="Component" :key="route.name" />
-        </keep-alive>
+        <!-- </keep-alive> -->
       </section>
     </router-view>
-  </VanConfigProvider>
+  <!-- </VanConfigProvider> -->
 </template>
 
 <style scoped>
