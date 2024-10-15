@@ -1,0 +1,14 @@
+{
+  "androidDownLoad":"Android Download ",
+  "iodDownLoad":" IOS Download",
+  "tip":"Tip",
+  "confirm":"konfirmasi",
+  "cancel":"Batalkan",
+  "downloadTip":"Download berhasil, klik untuk mengkonfirmasi berkas deskripsi instalasi",
+  "download":"Download",
+  "install":"Pasang",
+  "downloadSuccess":"Download Success ",
+  "downloadFail":"Download gagal",
+  "downloadFailTip":"Silakan periksa koneksi jaringan",
+  "downloadPage":"Download Halaman"
+}

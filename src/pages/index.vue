@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import  { showConfirmDialog } from 'vant'
+import { showConfirmDialog } from 'vant'
 import { gsap } from "gsap";
 import { useResizeObserver } from '@/hooks/useResizeObserver';
 import { useI18n } from 'vue-i18n'
@@ -38,7 +38,7 @@ watch(
   { immediate: true },
 )
 
-function getImageUrl(url:any) {
+function getImageUrl(url: any) {
   return new URL(`../assets/images/${url}`, import.meta.url).href;
 }
 
@@ -50,7 +50,7 @@ const iconSrc = ref(getImageUrl('az.png'));
 const iconSrc2 = ref(getImageUrl('ios.png'));
 let animation: any;
 function handleMouseOver() {
-  if(viewportVal.value === 'isMobile') return
+  if (viewportVal.value === 'isMobile') return
   animation = gsap.to(img1.value, {
     backgroundColor: 'yellow', duration: 0.1, onComplete: () => {
       iconSrc.value = getImageUrl('download.png'); // 悬浮时切换图标
@@ -59,7 +59,7 @@ function handleMouseOver() {
 }
 
 function handleMouseLeave() {
-  if(viewportVal.value === 'isMobile') return
+  if (viewportVal.value === 'isMobile') return
   animation = gsap.to(img1.value, {
     backgroundColor: '#fff', duration: 0.1, onComplete: () => {
       iconSrc.value = getImageUrl('az.png'); // 离开时恢复图标
@@ -68,7 +68,7 @@ function handleMouseLeave() {
 }
 
 function handleMouseOver2() {
-  if(viewportVal.value === 'isMobile') return
+  if (viewportVal.value === 'isMobile') return
   animation = gsap.to(img2.value, {
     backgroundColor: 'yellow', duration: 0.1, onComplete: () => {
       iconSrc2.value = getImageUrl('download.png'); // 悬浮时切换图标
@@ -77,7 +77,7 @@ function handleMouseOver2() {
 }
 
 function handleMouseLeave2() {
-  if(viewportVal.value === 'isMobile') return
+  if (viewportVal.value === 'isMobile') return
   animation = gsap.to(img2.value, {
     backgroundColor: '#fff', duration: 0.1, onComplete: () => {
       iconSrc2.value = getImageUrl('ios.png'); // 离开时恢复图标
@@ -92,7 +92,7 @@ const downloadAndroidPackage = () => {
 
 
 // 测试下载
-const handleIOSDownload = ()=> {
+const handleIOSDownload = () => {
   // 模拟下载逻辑
   fetch('https://777jogo-1313218760.cos.sa-saopaulo.myqcloud.com/777jogo/777JOGO.mobileconfig')
     .then(response => response.blob())
@@ -111,23 +111,32 @@ const handleIOSDownload = ()=> {
 }
 
 function downloadCompleted() {
-  console.log('Download completed');
   // 在这里执行下载完成后的操作
   setTimeout(() => {
-    showConfirmDialog({
-      title: t('tip'),
-      message:
-        t('downloadTip'),
-      confirmButtonText: t('install'),
-      cancelButtonText: t('cancel')
-    })
-      .then(() => {
+    if (viewportVal.value === 'isMobile') {
+      showConfirmDialog({
+        title: t('tip'),
+        message:
+          t('downloadTip'),
+        confirmButtonText: t('install'),
+        cancelButtonText: t('cancel')
+      })
+        .then(() => {
+          window.location.href =
+            "https://storage.googleapis.com/777jogo/777JOGO.mobileprovision";
+        })
+        .catch(() => {
+          // on cancel
+        });
+    } else {
+      // 弹出确认对话框
+      var result = window.confirm(t("downloadTip"));
+      if (result) {
         window.location.href =
           "https://storage.googleapis.com/777jogo/777JOGO.mobileprovision";
-      })
-      .catch(() => {
-        // on cancel
-      });
+      } else {
+      }
+    }
   }, 5000)
 
 }
@@ -154,8 +163,7 @@ onUnmounted(() => {
     <van-image class="absolute top-0 left-0 w-full" width="100%" height="auto" :src="getImageUrl('bg.png')" />
     <div class="phone_container w-100  h-150 left-60 top-20  absolute overflow-hidden " ref="phone">
       <van-image class="phone_img mx-auto absolute top-0 left-0 z-3  w-100 h-auto" :src="getImageUrl('phone.png')" />
-      <van-swipe
-        class="my-swipe w-62 h-135  absolute! z-2 bg-[#0c192c] left-19  top-4 rounded-5 overflow-hidden"
+      <van-swipe class="my-swipe w-62 h-135  absolute! z-2 bg-[#0c192c] left-19  top-4 rounded-5 overflow-hidden"
         :autoplay="3000" :show-indicators="false" indicator-color="white">
         <van-swipe-item class="w-full h-full">
           <img class="w-62 h-135" src="@/assets/images/slide-01.jpg" alt="">
@@ -170,21 +178,23 @@ onUnmounted(() => {
     </div>
     <ul class="downLoad flex flex-col mt-10 gap-10 absolute bottom-20 right-100 z-999 cursor-pointer" ref="download">
       <li
-        class="w-70 h-20 bg-white rounded-full shadow-2xl shadow-red-800/40 flex items-center justify-center text-center text-black "
-        @mouseover.stop="handleMouseOver()" @mouseleave.stop="handleMouseLeave()" ref="img1" @click="downloadAndroidPackage()"> 
-        <img class="w-8 h-auto mr-4" :src="iconSrc">
-        <span class="text-6">{{ t("androidDownLoad") }}</span>
+        class="w-70 h-20 px-5 bg-white rounded-full shadow-2xl shadow-red-800/40 flex items-center justify-between text-center text-black "
+        @mouseover.stop="handleMouseOver()" @mouseleave.stop="handleMouseLeave()" ref="img1"
+        @click="downloadAndroidPackage()">
+        <img class="w-8 h-auto mr-2 " :src="iconSrc">
+        <span class="text-6 text-center flex-1">{{ t("androidDownLoad") }}</span>
       </li>
       <li
-        class="w-70 h-20 bg-white rounded-full shadow-2xl shadow-red-800/40 flex items-center justify-center text-center text-black "
-        @mouseover.stop="handleMouseOver2()" @mouseleave.stop="handleMouseLeave2()" ref="img2" @click="handleIOSDownload()">
-        <img class="w-8 h-auto mr-4" :src="iconSrc2" alt="">
-        <span class="text-6">{{ t("iodDownLoad") }}</span>
+        class="w-70 h-20 px-5 bg-white rounded-full shadow-2xl shadow-red-800/40 flex items-center justify-between text-center text-black "
+        @mouseover.stop="handleMouseOver2()" @mouseleave.stop="handleMouseLeave2()" ref="img2"
+        @click="handleIOSDownload()">
+        <img class="w-8 h-auto mr-2 " :src="iconSrc2" alt="">
+        <span class="text-6 flex-1">{{ t("iodDownLoad") }}</span>
       </li>
     </ul>
   </div>
 </template>
-<style lang="less"scoped>
+<style lang="less" scoped>
 .container {
   width: 100vw;
   height: 100vh;
@@ -268,7 +278,7 @@ onUnmounted(() => {
 <route lang="json">{
   "name": "home",
   "meta": {
-    "title": "主页",
-    "i18n": "menus.home"
+    "title": "downloadPage",
+    "i18n": "downloadPage"
   }
 }</route>

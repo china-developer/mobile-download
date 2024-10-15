@@ -1,0 +1,14 @@
+{
+  "androidDownLoad":"アンドロイドダウンロード",
+  "iodDownLoad":"IOSダウンロード",
+  "tip":"ヒント",
+  "confirm":"OK",
+  "cancel":"キャンセル",
+  "downloadTip":"ダウンロードに成功しました。インストール記述ファイルを確認するにはクリックしてください",
+  "download":"ダウンロード",
+  "install":"インストール",
+  "downloadSuccess":"ダウンロード成功",
+  "downloadFail":"ダウンロードに失敗しました",
+  "downloadFailTip":"ネットワーク接続を確認してください",
+  "downloadPage":"ダウンロードページ"    
+}

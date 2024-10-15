@@ -9,5 +9,6 @@
   "install":"安装",
   "downloadSuccess":"下载成功",
   "downloadFail":"下载失败",
-  "downloadFailTip":"请检查网络连接"
+  "downloadFailTip":"请检查网络连接",
+  "downloadPage":"下载页面"
 }

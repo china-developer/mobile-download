@@ -1,13 +1,14 @@
 {
-  "androidDownLoad":"安卓下载",
-  "iodDownLoad":"IOS下载",
-  "tip":"提示",
-  "confirm":"确定",
-  "cancel":"取消",
-  "downloadTip":"下载成功，点击确认安装描述文件",
-  "download":"下载",
-  "install":"安装",
-  "downloadSuccess":"下载成功",
-  "downloadFail":"下载失败",
-  "downloadFailTip":"请检查网络连接"
+  "androidDownLoad":"Android Download",
+  "iodDownLoad":"IOS Download",
+  "tip":"Tip",
+  "confirm":"Confirm",
+  "cancel":"Cancel",
+  "downloadTip":"Download successful, click to confirm installation description file",
+  "download":"Download",
+  "install":"Install",
+  "downloadSuccess":"Download successful",
+  "downloadFail":"Download failed",
+  "downloadFailTip":"Please check network connection",
+  "downloadPage":"Download Page"
 }

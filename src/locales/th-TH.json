@@ -1,0 +1,14 @@
+{
+  "androidDownLoad":"ดาวน์โหลด Android",
+  "iodDownLoad":"ดาวน์โหลด IOS",
+  "tip":"เคล็ดลับ",
+  "confirm":"ตกลง",
+  "cancel":"ยกเลิก",
+  "downloadTip":"ดาวน์โหลดสำเร็จคลิกเพื่อยืนยันไฟล์คำอธิบายการติดตั้ง",
+  "download":"ดาวน์โหลด",
+  "install":"ติดตั้ง",
+  "downloadSuccess":"ดาวน์โหลดสำเร็จ",
+  "downloadFail":"ดาวน์โหลดล้มเหลว",
+  "downloadFailTip":"โปรดตรวจสอบการเชื่อมต่อเครือข่าย",
+  "downloadPage":"หน้าดาวน์โหลด"  
+}

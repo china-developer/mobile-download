@@ -1,0 +1,14 @@
+{
+  "androidDownLoad":"Tải xuống cho Android",
+  "iodDownLoad":"Tải xuống iOS",
+  "tip":"gợi ý",
+  "confirm":"chắc chắn",
+  "cancel":"hủy bỏ",
+  "downloadTip":"Tải xuống thành công, nhấp vào xác nhận tệp mô tả cài đặt",
+  "download":"Tải xuống",
+  "install":"cài đặt",
+  "downloadSuccess":"Tải xuống thành công",
+  "downloadFail":"Tải xuống không thành công",
+  "downloadFailTip":"Vui lòng kiểm tra kết nối mạng",
+  "downloadPage":"Trang tải xuống"
+}
