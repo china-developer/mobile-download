@@ -6,15 +6,6 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-definePage({
-  name: "downLoadPage",
-  meta: {
-    level: 1,
-    title: "Lotaria VN100",
-    i18n: "home.downLoadPage",
-  },
-});
-
 const checked = ref<boolean>(isDark.value)
 
 

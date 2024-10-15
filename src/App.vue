@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
+// import { storeToRefs } from 'pinia'
 import useAppStore from '@/stores/modules/app'
-import useRouteCache from '@/stores/modules/routeCache'
+// import useRouteCache from '@/stores/modules/routeCache'
 import useAutoThemeSwitcher from '@/hooks/useAutoThemeSwitcher'
 
 useHead({
-  title: 'Vue3 Vant Mobile',
+  title: 'Download-Page',
   meta: [
     {
       name: 'description',
-      content: 'Vue + Vite H5 Starter Template',
+      content: 'Download-Page',
     },
     {
       name: 'theme-color',
@@ -26,13 +26,13 @@ useHead({
 })
 
 const appStore = useAppStore()
-const { mode } = storeToRefs(appStore)
+// const { mode } = storeToRefs(appStore)
 
 const { initializeThemeSwitcher } = useAutoThemeSwitcher(appStore)
 
-const keepAliveRouteNames = computed(() => {
-  return useRouteCache().routeCaches as string[]
-})
+// const keepAliveRouteNames = computed(() => {
+//   return useRouteCache().routeCaches as string[]
+// })
 
 onMounted(() => {
   initializeThemeSwitcher()
